@@ -1,0 +1,28 @@
+version: "3.6"
+
+services:
+  app:
+    container_name: twitter_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["yarn", "dev"]
+    ports:
+      - 4000:4000
+      - 3000:3000
+    volumes:
+      - ./:/app
+    environment:
+      DATABASE_URL: postgres://root:password@db:5432/database
+      NODE_ENV: development
+    links:
+      - database
+  database:
+    image: "postgres" # use latest official postgres version
+    env_file:
+      - database.env # configure postgres
+    volumes:
+      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+
+volumes:
+  database-data: # named volumes can be managed easier using docker-compose
