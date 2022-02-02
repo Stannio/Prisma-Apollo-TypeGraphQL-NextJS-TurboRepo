@@ -13,12 +13,14 @@ services:
     volumes:
       - ./:/app
     environment:
-      DATABASE_URL: postgres://root:password@db:5432/database
+      DATABASE_URL: postgres://root:password@database:5432/database?schema=public
       NODE_ENV: development
     links:
       - database
   database:
     image: "postgres" # use latest official postgres version
+    ports:
+      - 5432:5432
     env_file:
       - database.env # configure postgres
     volumes:
