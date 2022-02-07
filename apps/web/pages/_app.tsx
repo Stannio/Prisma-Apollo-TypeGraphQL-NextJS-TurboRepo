@@ -1,10 +1,19 @@
-import { withUrqlClient } from "next-urql";
+import type { AppProps } from "next/app";
+import { SessionProvider } from "next-auth/react";
+import { Provider as GraphqlProvider } from "urql";
+import useClient from "../graphql/client";
 
-const App = ({ Component, pageProps }) => <Component {...pageProps} />;
+function App({ Component, pageProps }: AppProps) {
+  const { session } = pageProps;
+  const client = useClient();
 
-export default withUrqlClient(
-  () => ({
-    url: "http://localhost:4000/graphql",
-  }),
-  { ssr: false }
-)(App);
+  return (
+    <GraphqlProvider value={client}>
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
+    </GraphqlProvider>
+  );
+}
+
+export default App;
